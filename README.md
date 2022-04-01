@@ -33,7 +33,7 @@ Below is the listing of what this package alter/improve:
 - Adds a `not-banned` middleware.
 - Adds a captcha and proxy validation on authentication.
 - Adds an image format engine for profile image.
-- Adds an `agent` and `location` value on profile sessions listing.
+- Adds `agent` and `location` values to sessions listing on profile page.
 - Adds an `ip_address`, `banned_at` field to user table (Check [database folder](database)).
 - Adds the `ip_address` field for Fortify & Socialstream actions, and User model (Check [stubs folder](stubs)).
 - Change the validation rules for Fortify & Socialstream actions to stricter rules (Check [stubs/app/Actions folder](stubs/app/Actions)).

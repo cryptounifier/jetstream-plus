@@ -32,6 +32,7 @@ class JetstreamPlusServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configurePublishing();
+        $this->configureCommands();
         $this->bootInertia();
 
         // Bind extra fortify provider...
@@ -59,6 +60,20 @@ class JetstreamPlusServiceProvider extends ServiceProvider
             __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'        => database_path('migrations/2014_10_12_000000_create_users_table.php'),
             __DIR__ . '/../database/migrations/2021_06_28_133032_create_ip_addresses_table.php' => database_path('migrations/2021_06_28_133032_create_ip_addresses_table.php'),
         ], 'jetstream-utils-migrations');
+    }
+
+    /**
+     * Configure the commands offered by the application.
+     */
+    protected function configureCommands(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->commands([
+            Console\InstallCommand::class,
+        ]);
     }
 
     /**

@@ -4,7 +4,7 @@ Jetstream Plus is a third-party package for [Laravel Jetstream](https://github.c
 
 ## Installation
 
-Getting started with Jetstream Plus is a breeze. With a simple step to get you on your way to creating the next big thing.
+Getting started with Jetstream Plus is a breeze. With a simple step to get you on your way to creating the next big thing. Installation step:
 
 ```sh
 composer require cryptounifier/jetstream-plus

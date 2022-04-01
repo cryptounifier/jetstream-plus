@@ -24,7 +24,7 @@ class InstallCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->callSilent('vendor:publish', ['--tag' => 'laravel-concrete-configs', '--force' => true]);
         $this->callSilent('vendor:publish', ['--tag' => 'laravel-concrete-migrations', '--force' => true]);

@@ -1,6 +1,6 @@
 {
     "name": "cryptounifier/jetstream-plus",
-    "description": "Some extra functionality to the default Laravel Jetstream + Socialstream stack.",
+    "description": "Some extra features to the default Laravel Jetstream + Socialstream stack.",
     "keywords": ["laravel", "jetstream", "socialstream", "jetstream-plus"],
     "license": "MIT",
     "type": "library",

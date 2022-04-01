@@ -1,0 +1,38 @@
+{
+    "name": "cryptounifier/jetstream-plus",
+    "type": "library",
+    "authors": [
+        {
+            "name": "cryptounifier",
+            "email": "contact@cryptounifier.io"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/jetstream": "^2.7.0",
+        "joelbutcher/socialstream": "^3.4.0",
+        "cybercog/laravel-ban": "^4.7.0",
+        "intervention/image": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "CryptoUnifier\\JetstreamPlus\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\": "stubs/app/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CryptoUnifier\\JetstreamPlus\\JetstreamPlusServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

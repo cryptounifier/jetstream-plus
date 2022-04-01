@@ -54,12 +54,12 @@ class JetstreamPlusServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/captcha.php'    => config_path('captcha.php'),
             __DIR__ . '/../config/ip_address.php' => config_path('ip_address.php'),
-        ], 'jetstream-utils-configs');
+        ], 'jetstream-plus-configs');
 
         $this->publishes([
             __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'        => database_path('migrations/2014_10_12_000000_create_users_table.php'),
             __DIR__ . '/../database/migrations/2021_06_28_133032_create_ip_addresses_table.php' => database_path('migrations/2021_06_28_133032_create_ip_addresses_table.php'),
-        ], 'jetstream-utils-migrations');
+        ], 'jetstream-plus-migrations');
     }
 
     /**

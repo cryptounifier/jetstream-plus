@@ -1,6 +1,6 @@
 # Jetstream Plus
 
-Jetstream Plus is a third-party package for [Laravel Jetstream](https://github.com/laravel/jetstream). It adds some extra functionality to the default Jetstream + Socialstream stack.
+Jetstream Plus is a third-party package for [Laravel Jetstream](https://github.com/laravel/jetstream). It adds some extra functionality to the default Laravel Jetstream + Socialstream stack.
 
 ## Installation
 

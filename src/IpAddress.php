@@ -139,7 +139,7 @@ class IpAddress extends Model
      */
     protected static function proxyCheckRequest(string $ip, array $config)
     {
-        $response = Http::get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1")->json();
+        $response = Http::get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
 
         if (! isset($response['status']) || $response['status'] !== 'ok') {
             return;
@@ -152,9 +152,9 @@ class IpAddress extends Model
             'asn' => $response['asn'],
             'continent' => $response['continent'],
             'country' => $response['country'],
-            'country_code' => $response['country_code'],
+            'country_code' => $response['isocode'],
             'region' => $response['region'],
-            'region_code' => $response['region_code'],
+            'region_code' => $response['regioncode'],
             'city' => $response['city'],
             'latitude' => $response['latitude'],
             'longitude' => $response['longitude'],

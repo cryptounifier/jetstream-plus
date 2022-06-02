@@ -65,17 +65,17 @@ class IpAddress extends Model
     {
         $config = config('ip_address');
 
-        /*
-         * Get result if no update mandatory
-         * Validate `update_at` ip address data
-         */
+        if (is_array($id) || $id instanceof Arrayable) {
+            throw new InvalidArgumentException('IpAddress::find() expects a string as the first parameter.');
+        }
+
+        // Get result if no update mandatory
+        // Validate `updated_at` ip address data
         if (! $update) {
-            $result = (is_array($id) || $id instanceof Arrayable)
-                ? self::findMany($id, $columns)
-                : self::whereKey($id)->first($columns);
+            $result = self::whereKey($id)->first($columns);
 
             if ($result) {
-                if ($result->update_at < now()->subSeconds($config['data_duration'])) {
+                if ($result->updated_at < now()->subSeconds($config['data_duration'])) {
                     return self::find($id, $columns, true);
                 }
 
@@ -83,9 +83,7 @@ class IpAddress extends Model
             }
         }
 
-        /*
-         * No information cached on database, request to driver.
-         */
+        // No information cached on database, request to driver.
         if ($config['key']) {
             if ($config['driver'] === 'proxycheck') {
                 $result = self::proxyCheckRequest($id, $config);
@@ -96,16 +94,20 @@ class IpAddress extends Model
             $result = false;
         }
 
-        /*
-         * Driver returned an invalid response.
-         */
+        // Driver returned an invalid response
         if (! $result) {
             return new self(['ip_address' => $id]);
         }
 
-        return (! $update)
-            ? self::create($result)
-            : self::where('ip_address', $id)->update($result);
+        // Create new ip address row
+        if (! $result) {
+            return self::create($result);
+        }
+        
+        // Update ip address row
+        self::where('ip_address', $id)->update($result);
+
+        return self::whereKey($id)->first($columns);
     }
 
     /**

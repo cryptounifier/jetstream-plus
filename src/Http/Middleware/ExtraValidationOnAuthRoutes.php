@@ -3,7 +3,8 @@
 namespace CryptoUnifier\JetstreamPlus\Http\Middleware;
 
 use Closure;
-use CryptoUnifier\JetstreamPlus\{CaptchaValidator, IpAddress};
+use CryptoUnifier\JetstreamPlus\CaptchaValidator;
+use CryptoUnifier\JetstreamPlus\IpAddress;
 use Illuminate\Http\Request;
 
 class ExtraValidationOnAuthRoutes
@@ -56,7 +57,7 @@ class ExtraValidationOnAuthRoutes
      */
     protected function validateIpAddress(Request $request)
     {
-        if (! IpAddress::find($request->ip())->proxy) {
+        if (IpAddress::find($request->ip())->proxy) {
             return back()->withErrors(
                 __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'),
                 'ipAddress'

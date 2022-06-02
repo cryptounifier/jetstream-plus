@@ -159,7 +159,7 @@ class IpAddress extends Model
             'latitude' => $response['latitude'],
             'longitude' => $response['longitude'],
             'risk' => $response['risk'],
-            'proxy' => $response['proxy'],
+            'proxy' => ($response['proxy'] === 'yes') ? 1 : 0,
             'driver' => 'proxycheck',
         ];
     }

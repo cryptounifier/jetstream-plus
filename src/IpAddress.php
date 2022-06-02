@@ -99,15 +99,16 @@ class IpAddress extends Model
             return new self(['ip_address' => $id]);
         }
 
-        // Create new ip address row
-        if (! $result) {
-            return self::create($result);
-        }
-        
-        // Update ip address row
-        self::where('ip_address', $id)->update($result);
 
-        return self::whereKey($id)->first($columns);
+        // Update ip address row ($update will only be true if exists or forced)
+        if ($update) {
+            self::where('ip_address', $id)->update($result);
+
+            return self::whereKey($id)->first($columns);
+        }
+
+        // Create new ip address row
+        return self::create($result);
     }
 
     /**

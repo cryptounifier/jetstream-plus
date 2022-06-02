@@ -139,7 +139,7 @@ class IpAddress extends Model
      */
     protected static function proxyCheckRequest(string $ip, array $config)
     {
-        $response = Http::get("http://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1")->json();
+        $response = Http::get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1")->json();
 
         if (! isset($response['status']) || $response['status'] !== 'ok') {
             return;

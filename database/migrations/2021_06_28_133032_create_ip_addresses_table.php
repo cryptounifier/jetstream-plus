@@ -20,8 +20,8 @@ class CreateIpAddressesTable extends Migration
             $table->string('region')->nullable();
             $table->string('region_code', 2);
             $table->string('city');
-            $table->decimal('latitude', 10, 8);
-            $table->decimal('longitude', 10, 8);
+            $table->decimal('latitude', 11, 8);
+            $table->decimal('longitude', 11, 8);
             $table->tinyInteger('risk');
             $table->boolean('proxy');
             $table->string('driver');

@@ -18,7 +18,7 @@ class CreateIpAddressesTable extends Migration
             $table->string('country')->nullable();
             $table->string('country_code', 2);
             $table->string('region')->nullable();
-            $table->string('region_code', 2);
+            $table->string('region_code', 8);
             $table->string('city');
             $table->decimal('latitude', 11, 8);
             $table->decimal('longitude', 11, 8);

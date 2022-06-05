@@ -158,7 +158,7 @@ class IpAddress extends Model
             'country_code' => $response['isocode'],
             'region' => $response['region'],
             'region_code' => $response['regioncode'],
-            'city' => $response['city'],
+            'city' => $response['city'] ?? 'Unknown',
             'latitude' => $response['latitude'],
             'longitude' => $response['longitude'],
             'risk' => $response['risk'],

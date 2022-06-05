@@ -13,7 +13,7 @@ class CreateIpAddressesTable extends Migration
     {
         Schema::create('ip_addresses', function (Blueprint $table): void {
             $table->ipAddress('ip_address')->primary();
-            $table->string('asn', 7);
+            $table->string('asn', 12);
             $table->string('continent');
             $table->string('country')->nullable();
             $table->string('country_code', 2);

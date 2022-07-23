@@ -42,7 +42,9 @@ class ExtraValidationOnAuthRoutes
      */
     protected function validateCaptcha(Request $request)
     {
-        if (! CaptchaValidator::validate($request->input('captcha_token'))) {
+        $captchaToken = (string) $request->input('captcha_token');
+
+        if (! CaptchaValidator::validate($captchaToken)) {
             return back()->withErrors(
                 __('Invalid captcha answer. Please complete the challenge correctly.'),
                 'captcha'
@@ -57,7 +59,9 @@ class ExtraValidationOnAuthRoutes
      */
     protected function validateIpAddress(Request $request)
     {
-        if (IpAddress::find($request->ip())->proxy) {
+        $isProxy = IpAddress::find($request->ip())->proxy;
+
+        if ($isProxy) {
             return back()->withErrors(
                 __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'),
                 'ipAddress'

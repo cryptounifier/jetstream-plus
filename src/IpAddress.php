@@ -61,7 +61,7 @@ class IpAddress extends Model
      *
      * @return self
      */
-    public static function find($id, $columns = ['*'], bool $update = false)
+    public static function find($id, $columns = ['*'])
     {
         $config = config('ip_address');
 
@@ -69,46 +69,17 @@ class IpAddress extends Model
             throw new InvalidArgumentException('IpAddress::find() expects a string as the first parameter.');
         }
 
-        // Get result if no update mandatory
-        // Validate `updated_at` ip address data
-        if (! $update) {
-            $result = self::whereKey($id)->first($columns);
+        $result = self::whereKey($id)->first($columns);
 
-            if ($result) {
-                if ($result->updated_at < now()->subSeconds($config['data_duration'])) {
-                    return self::find($id, $columns, true);
-                }
-
-                return $result;
+        if ($result) {
+            if ($result->updated_at < now()->subSeconds($config['data_duration'])) {
+                return self::updateOrCreateIpAddress($id);
             }
+
+            return $result;
         }
 
-        // No information cached on database, request to driver.
-        if ($config['key']) {
-            if ($config['driver'] === 'proxycheck') {
-                $result = self::proxyCheckRequest($id, $config);
-            } else {
-                throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
-            }
-        } else {
-            $result = false;
-        }
-
-        // Driver returned an invalid response
-        if (! $result) {
-            return new self(['ip_address' => $id]);
-        }
-
-
-        // Update ip address row ($update will only be true if exists or forced)
-        if ($update) {
-            self::where('ip_address', $id)->update($result);
-
-            return self::whereKey($id)->first($columns);
-        }
-
-        // Create new ip address row
-        return self::create($result);
+        return self::updateOrCreateIpAddress($id);
     }
 
     /**
@@ -136,13 +107,39 @@ class IpAddress extends Model
     }
 
     /**
+     * Update or create IP address.
+     */
+    protected static function updateOrCreateIpAddress(string $ipAddress)
+    {
+        $config = config('ip_address');
+
+        if ($config['key']) {
+            if ($config['driver'] === 'proxycheck') {
+                $result = self::proxyCheckRequest($ipAddress, $config);
+            } else {
+                throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
+            }
+        } else {
+            $result = false;
+        }
+
+        if (! $result) {
+            return new self(['ip_address' => $ipAddress]);
+        }
+
+        // Ensure that it will not try to create with an existing row
+
+        return self::updateOrCreate(['ip_address' => $ipAddress], $result);
+    }
+
+    /**
      * Make request to proxyCheck service.
      *
      * @return array|null
      */
     protected static function proxyCheckRequest(string $ip, array $config)
     {
-        $response = Http::get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
+        $response = Http::timeout(5)->get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
 
         if (! isset($response['status']) || $response['status'] !== 'ok') {
             return;

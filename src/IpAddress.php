@@ -152,7 +152,7 @@ class IpAddress extends Model
             'asn' => $response['asn'] ?? 'Unknown',
             'continent' => $response['continent'],
             'country' => $response['country'] ?? 'Unknown',
-            'country_code' => $response['isocode'],
+            'country_code' => $response['isocode'] ?? 'XX',
             'region' => $response['region'] ?? 'Unknown',
             'region_code' => $response['regioncode'] ?? '00',
             'city' => $response['city'] ?? 'Unknown',

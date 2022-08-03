@@ -14,7 +14,6 @@
         "php": "^8.0",
         "laravel/jetstream": "^2.7.0",
         "joelbutcher/socialstream": "^3.4.0",
-        "cybercog/laravel-ban": "^4.7.0",
         "intervention/image": "^2.7"
     },
     "autoload": {

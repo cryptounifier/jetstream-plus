@@ -34,11 +34,6 @@ class InstallCommand extends Command
 
         (new Filesystem())->copyDirectory(__DIR__ . '/../../stubs/tests', base_path('tests'));
 
-        // $this->installServiceMiddlewareAfter(
-        //     "'verified' => \\Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified::class,",
-        //    "'not-banned' => \\CryptoUnifier\\JetstreamPlus\\Http\\Middleware\\RedirectBannedUser::class,"
-        // );
-
         return Command::SUCCESS;
     }
 

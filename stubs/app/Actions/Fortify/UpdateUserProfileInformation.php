@@ -2,8 +2,6 @@
 
 namespace App\Actions\Fortify;
 
-use Qirolab\Contracts\Ban\Bannable as BannableContract;
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,10 +16,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update($user, array $input): void
     {
-        if (method_exists($user, 'isBanned') && $user->isBanned()) {
-            return;
-        }
-
         Validator::make($input, [
             'name'  => ['required', 'string', 'alpha_num', 'min:2', 'max:25', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'email:rfc,strict,filter', 'max:255', Rule::unique('users')->ignore($user->id)],

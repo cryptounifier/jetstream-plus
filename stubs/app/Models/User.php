@@ -5,17 +5,15 @@ namespace App\Models;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-use CryptoUnifier\JetstreamPlus\Contracts\BannableContract;
-use CryptoUnifier\JetstreamPlus\Traits\{Bannable, HasConnectedAccounts, HasProfilePhoto};
+use CryptoUnifier\JetstreamPlus\Traits\{HasConnectedAccounts, HasProfilePhoto};
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable implements BannableContract, MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Bannable;
     use HasApiTokens;
     use HasConnectedAccounts;
     use HasFactory;

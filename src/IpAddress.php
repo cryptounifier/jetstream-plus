@@ -84,23 +84,19 @@ class IpAddress extends Model
 
     /**
      * Create a new element with current user ip address.
-     *
-     * @return self
      */
-    public static function currentUser()
+    public static function currentUser(): self
     {
         return self::find(optional(request())->ip());
     }
 
     /**
      * Get location string attribute.
-     *
-     * @return string|null
      */
-    public function getLocationAttribute()
+    public function getLocationAttribute(): ?string
     {
         if (! $this->country) {
-            return;
+            return null;
         }
 
         return trim("{$this->country}, {$this->city} - {$this->region}");
@@ -134,15 +130,13 @@ class IpAddress extends Model
 
     /**
      * Make request to proxyCheck service.
-     *
-     * @return array|null
      */
-    protected static function proxyCheckRequest(string $ip, array $config)
+    protected static function proxyCheckRequest(string $ip, array $config): ?array
     {
         $response = Http::timeout(5)->get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
 
         if (! isset($response['status']) || $response['status'] !== 'ok') {
-            return;
+            return null;
         }
 
         $response = $response[$ip];

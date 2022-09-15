@@ -6,17 +6,82 @@ use Illuminate\Support\Facades\Http;
 
 class CaptchaValidator
 {
-    public static function validate(string $token): bool
+    /**
+     * Construct method.
+     */
+    public function __construct(protected string $driver, protected string $secretKey, protected string $siteKey)
     {
-        if (config('captcha.driver') === 'hcaptcha') {
-            $captcha = (object) Http::asForm()->post('https://hcaptcha.com/siteverify', [
-                'secret'   => config('captcha.secret_key'),
-                'response' => $token,
-            ])->json();
+    }
 
-            return optional($captcha)->success;
+    /**
+     * Instantiate class with default configs.
+     */
+    public static function __callStatic(string $name, array $arguments): mixed
+    {
+        return (new static(config('captcha.driver'), config('captcha.secret_key'), config('captcha.site_key')))->{$name}(...$arguments);
+    }
+
+    /**
+     * Validate captcha token response.
+     */
+    public function validate(string $token): bool
+    {
+        return match ($this->driver) {
+            'hcaptcha' => $this->validateHcaptcha($token),
+            'recaptcha' => $this->validateReCaptcha($token),
+            'geetest' => $this->validateGeeTest($token),
+            default => false,
+        };
+    }
+
+    /**
+     * Validate using hCaptcha driver.
+     */
+    protected function validateHCaptcha(string $token): bool
+    {
+        $captcha = (object) Http::asForm()->post('https://hcaptcha.com/siteverify', [
+            'secret'   => $this->secretKey,
+            'response' => $token,
+        ])->json();
+
+        return optional($captcha)->success;
+    }
+
+    /**
+     * Validate using reCaptcha driver.
+     */
+    protected function validateReCaptcha(string $token): bool
+    {
+        $captcha = (object) Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => $this->secretKey,
+            'response' => $token,
+        ])->json();
+
+        return optional($captcha)->success;
+    }
+
+    /**
+     * Validate using GeeTest driver.
+     */
+    protected function validateGeeTest(string $token): bool
+    {
+        $token = explode('.', $token);
+
+        if (count($token) !== 4) {
+            return false;
         }
 
-        return false;
+        $signToken = hash('sha256', hex2bin($this->secretKey) . hex2bin($token[0]));
+
+        $captcha = (object) Http::asForm()->post('http://gcaptcha4.geetest.com/validate', [
+            'lot_number'   => $token[0],
+            'captcha_output' => $token[1],
+            'pass_token' => $token[2],
+            'gen_time'  => $token[3],
+            'sign_token' => $signToken,
+            'captcha_id' => $this->siteKey,
+        ])->json();
+
+        return optional($captcha)->result === 'success';
     }
 }

@@ -25,17 +25,14 @@ Below is the listing of what this package implements:
 - Adds a Captcha class helper ([hCaptcha](https://www.hcaptcha.com/) supported).
 - Adds a IP address class helper ([ProxyCheck](https://proxycheck.io/) supported).
 - Adds a User Agent class helper (On top of [Jenssegers Agent](https://github.com/jenssegers/agent)).
-- Adds user ban system (On top of [Laravel Ban](https://github.com/cybercog/laravel-ban)).
 
 Below is the listing of what this package alter/improve:
 
 - Adds a `sign-in-notification` feature for Fortify.
-<!-- - Adds a `not-banned` middleware. -->
 - Adds a captcha and proxy validation on authentication.
 - Adds an image format engine for profile image.
 - Adds `agent` and `location` values to sessions listing on profile page.
 - Adds an `ip_address` field to user table (Check [database folder](database)).
-<!-- - Adds an `ip_address`, `banned_at` field to user table (Check [database folder](database)). -->
 - Adds the `ip_address` field for Fortify & Socialstream actions, and User model (Check [stubs folder](stubs)).
 - Change the validation rules for Fortify & Socialstream actions to stricter rules (Check [stubs/app/Actions folder](stubs/app/Actions)).
 - Adapt Jetstream default tests to comply with the stricter rules (Check [stubs/tests folder](stubs/tests)).

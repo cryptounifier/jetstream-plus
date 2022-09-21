@@ -16,7 +16,7 @@ class CaptchaValidator
     /**
      * Instantiate class with default driver and configs.
      */
-    public static function defaultDriver(): mixed
+    public static function defaultDriver(): static
     {
         return new static(config('captcha.driver'), config('captcha.secret_key'), config('captcha.site_key'));
     }

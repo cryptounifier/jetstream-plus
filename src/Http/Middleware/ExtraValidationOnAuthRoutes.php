@@ -44,7 +44,7 @@ class ExtraValidationOnAuthRoutes
     {
         $captchaToken = (string) $request->input('captcha_token');
 
-        if (! CaptchaValidator::validate($captchaToken)) {
+        if (! CaptchaValidator::defaultDriver()->validate($captchaToken)) {
             return back()->withErrors(
                 __('Invalid captcha answer. Please complete the challenge correctly.'),
                 'captcha'

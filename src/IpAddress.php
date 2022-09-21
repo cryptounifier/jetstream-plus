@@ -112,6 +112,8 @@ class IpAddress extends Model
         if ($config['key']) {
             if ($config['driver'] === 'proxycheck') {
                 $result = self::proxyCheckRequest($ipAddress, $config);
+            } elseif ($config['driver'] === 'ipregistry') {
+                $result = self::ipRegistryRequest($ipAddress, $config);
             } else {
                 throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
             }
@@ -155,6 +157,42 @@ class IpAddress extends Model
             'risk' => (int) ($response['risk'] ?? '100'),
             'proxy' => ($response['proxy'] === 'yes') ? 1 : 0,
             'driver' => 'proxycheck',
+        ];
+    }
+
+    /**
+     * Make request to ipRegistry service.
+     */
+    protected static function ipRegistryRequest(string $ip, array $config): ?array
+    {
+        $response = Http::timeout(5)->get("https://api.ipregistry.co/{$ip}?key={$config['key']}")->json();
+
+        if (isset($response['code']) || ! isset($response['ip'])) {
+            return null;
+        }
+
+        $isProxy = false;
+        foreach ($response['security'] as $type => $value) {
+            if ($value) {
+                $isProxy = true;
+                break;
+            }
+        }
+
+        return [
+            'ip_address' => $ip,
+            'asn' => 'AS' . ((string) $response['connection']['asn']),
+            'continent' => $response['location']['continent']['continent'],
+            'country' => $response['location']['country']['name'],
+            'country_code' => $response['location']['country']['code'],
+            'region' => $response['location']['region']['name'],
+            'region_code' => $response['location']['region']['code'],
+            'city' => $response['location']['city'],
+            'latitude' => $response['location']['latitude'],
+            'longitude' => $response['location']['longitude'],
+            'risk' => ($isProxy) ? 100 : 0,
+            'proxy' => (int) $isProxy,
+            'driver' => 'ipregistry',
         ];
     }
 }

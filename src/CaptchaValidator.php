@@ -71,7 +71,7 @@ class CaptchaValidator
             return false;
         }
 
-        $signToken = hash('sha256', hex2bin($this->secretKey) . hex2bin($token[0]));
+        $signToken = hash_hmac('sha256', $token[0], $this->secretKey);
 
         $captcha = (object) Http::asForm()->post('http://gcaptcha4.geetest.com/validate', [
             'lot_number'   => $token[0],

@@ -6,6 +6,7 @@ use Closure;
 use CryptoUnifier\JetstreamPlus\CaptchaValidator;
 use CryptoUnifier\JetstreamPlus\IpAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 
 class ExtraValidationOnAuthRoutes
 {
@@ -45,10 +46,10 @@ class ExtraValidationOnAuthRoutes
         $captchaToken = (string) $request->input('captcha_token');
 
         if (! CaptchaValidator::defaultDriver()->validate($captchaToken)) {
-            return back()->withErrors(
-                __('Invalid captcha answer. Please complete the challenge correctly.'),
-                'captcha'
-            );
+            $messageBag = new MessageBag();
+            $messageBag->add('captcha', __('Invalid captcha answer. Please complete the challenge correctly.'));
+
+            return back()->withErrors($messageBag);
         }
     }
 
@@ -62,10 +63,10 @@ class ExtraValidationOnAuthRoutes
         $isProxy = IpAddress::find($request->ip())->proxy;
 
         if ($isProxy) {
-            return back()->withErrors(
-                __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'),
-                'ipAddress'
-            );
+            $messageBag = new MessageBag();
+            $messageBag->add('captcha', __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'));
+
+            return back()->withErrors($messageBag);
         }
     }
 }

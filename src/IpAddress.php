@@ -137,7 +137,7 @@ class IpAddress extends Model
     {
         $response = Http::timeout(5)->get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
 
-        if (! isset($response['status']) || $response['status'] !== 'ok') {
+        if (! isset($response[$ip])) { // Cannot check status === 'ok', since status is not always ok, even when the request is successful
             return null;
         }
 

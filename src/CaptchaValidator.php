@@ -30,6 +30,7 @@ class CaptchaValidator
             'hcaptcha' => $this->validateHcaptcha($token),
             'recaptcha' => $this->validateReCaptcha($token),
             'geetest' => $this->validateGeeTest($token),
+            'turnstile' => $this->validateTurnstile($token),
             default => false,
         };
     }
@@ -53,6 +54,19 @@ class CaptchaValidator
     protected function validateReCaptcha(string $token): bool
     {
         $captcha = (object) Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => $this->secretKey,
+            'response' => $token,
+        ])->json();
+
+        return optional($captcha)->success;
+    }
+
+    /**
+     * Validate using Turnstile driver.
+     */
+    protected function validateTurnstile(string $token): bool
+    {
+        $captcha = (object) Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret'   => $this->secretKey,
             'response' => $token,
         ])->json();

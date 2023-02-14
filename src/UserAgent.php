@@ -6,6 +6,11 @@ use Jenssegers\Agent\Agent;
 
 class UserAgent
 {
+    public const DEVICE_TYPE_UNKNOWN = 0;
+    public const DEVICE_TYPE_DESKTOP = 1;
+    public const DEVICE_TYPE_MOBILE = 2;
+    public const DEVICE_TYPE_TABLET = 3;
+
     protected Agent $agent;
 
     public function __construct(string $userAgent, array $headers = [])
@@ -25,7 +30,7 @@ class UserAgent
         }
     }
 
-    public function platformName()
+    public function platformName(): string
     {
         $platform = $this->agent->platform();
         $version = $this->agent->version($platform);
@@ -33,11 +38,28 @@ class UserAgent
         return trim("{$platform} ".(($version) ?: __('Unknown')));
     }
 
-    public function browserName()
+    public function browserName(): string
     {
         $browser = $this->agent->browser();
         $version = $this->agent->version($browser);
 
         return trim("{$browser} ".(($version) ?: __('Unknown')));
+    }
+
+    public function deviceType(): int
+    {
+        if ($this->agent->isDesktop()) {
+            return self::DEVICE_TYPE_DESKTOP;
+        }
+
+        if ($this->agent->isMobile()) {
+            return self::DEVICE_TYPE_MOBILE;
+        }
+
+        if ($this->agent->isTablet()) {
+            return self::DEVICE_TYPE_TABLET;
+        }
+
+        return self::DEVICE_TYPE_UNKNOWN;
     }
 }

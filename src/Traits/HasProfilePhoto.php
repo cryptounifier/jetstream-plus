@@ -5,10 +5,11 @@ namespace CryptoUnifier\JetstreamPlus\Traits;
 use Intervention\Image\ImageManagerStatic as Image;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 use Laravel\Jetstream\Features;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasProfilePhoto
 {
@@ -56,6 +57,10 @@ trait HasProfilePhoto
             return;
         }
 
+        if (is_null($this->profile_photo_path)) {
+            return;
+        }
+
         Storage::disk($this->profilePhotoDisk())->delete($this->profile_photo_path);
 
         $this->forceFill([
@@ -66,13 +71,15 @@ trait HasProfilePhoto
     /**
      * Get the URL to the user's profile photo.
      *
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    public function getProfilePhotoUrlAttribute()
+    public function profilePhotoUrl(): Attribute
     {
-        return $this->profile_photo_path
+        return Attribute::get(function () {
+            return $this->profile_photo_path
                     ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
                     : $this->defaultProfilePhotoUrl();
+        });
     }
 
     /**

@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "laravel/jetstream": "^2.7.0",
-        "joelbutcher/socialstream": "^3.4.0",
+        "laravel/jetstream": "^3.0.0",
+        "joelbutcher/socialstream": "^4.0.0",
         "intervention/image": "^2.7"
     },
     "autoload": {

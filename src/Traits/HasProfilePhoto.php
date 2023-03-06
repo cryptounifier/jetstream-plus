@@ -25,7 +25,7 @@ trait HasProfilePhoto
     /**
      * Update the user's profile photo.
      */
-    public function updateProfilePhoto(UploadedFile $photo): void
+    public function updateProfilePhoto(UploadedFile $photo, string $storagePath = 'profile-photos'): void
     {
         // Format, resize image and save temporarily
         // TODO: Support gif, the currently library do not support animated gif resizing
@@ -33,10 +33,10 @@ trait HasProfilePhoto
 
         // Upload image publicly
         // TODO: Check if because the image changes to jpg, the $photo class need to updated
-        tap($this->profile_photo_path, function ($previous) use ($photo): void {
+        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath): void {
             $this->forceFill([
                 'profile_photo_path' => $photo->storePublicly(
-                    'profile-photos',
+                    $storagePath,
                     ['disk' => $this->profilePhotoDisk()]
                 ),
             ])->save();

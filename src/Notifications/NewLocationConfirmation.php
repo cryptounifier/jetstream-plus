@@ -9,14 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SignInDetected extends Notification
+class NewLocationConfirmation extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Request $request)
+    public function __construct(protected Request $request, protected string $confirmationCode)
     {
     }
 
@@ -46,19 +46,20 @@ class SignInDetected extends Notification
         $currentDate = '**' . now() . '**';
 
         $mail = (new MailMessage())
-            ->subject(__('Sign In To Your Account Detected'))
-            ->line(__('We just detected a new successful sign in to your account. We\'re sending you this e-mail to make sure it was you.'))
+            ->subject(__('New Location Confirmation'))
+            ->line(__('We noticed there was an attempt to access your account from a new location. For successful login, please authorize using the following verification code:'))
+            ->line(' ')
+            ->line('# ' . $this->confirmationCode)
             ->line(' ');
 
-        // Add location only if ip address service is online
+        // add location only if ip address service is online
         $mail = ($ipInfo->location)
             ? $mail->line(__('Request made from: :location at :date.', ['location' => "**{$ipInfo->location}**", 'date' => $currentDate]))
             : $mail->line(__('Request made at :date.', ['date' => $currentDate]));
 
         return $mail->line(__('Device: :platform (:browser).', ['platform' => "**{$userAgent->platformName()}**", 'browser' => "**{$userAgent->browserName()}**"]))
             ->line(__('IP Address: :ip.', ['ip' => "**{$ipInfo->ip_address}**"]))
-            ->action(__('Secure Your Account'), route('profile.show'))
-            ->line(__('If you did not initiate this request, please secure your account immediately.'));
+            ->line(__('If you did not initiate this request, please change your account password immediately.'));
     }
 
     /**

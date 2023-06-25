@@ -3,6 +3,9 @@
 namespace CryptoUnifier\JetstreamPlus;
 
 use CryptoUnifier\JetstreamPlus\Actions\NotifySignInDetected;
+use CryptoUnifier\JetstreamPlus\Actions\RedirectIfNewLocationConfirmationNeeded;
+use CryptoUnifier\JetstreamPlus\Contracts\ConfirmNewLocationViewResponse;
+use CryptoUnifier\JetstreamPlus\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use CryptoUnifier\JetstreamPlus\Http\Controllers\UserProfileController;
 
 use Laravel\Fortify\{Features, Fortify};
@@ -12,8 +15,9 @@ use Laravel\Fortify\Actions\{AttemptToAuthenticate, EnsureLoginIsNotThrottled, P
 use Illuminate\Http\Request;
 
 use Illuminate\Contracts\Http\Kernel;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Http\Responses\SimpleViewResponse;
 
 class JetstreamPlusServiceProvider extends ServiceProvider
 {
@@ -33,7 +37,11 @@ class JetstreamPlusServiceProvider extends ServiceProvider
     {
         $this->configurePublishing();
         $this->configureCommands();
-        $this->bootInertia();
+        $this->configureRoutes();
+
+        if (config('jetstream.stack') === 'inertia') {
+            $this->bootInertia();
+        }
 
         // Bind extra fortify provider...
         $this->fortifyServiceProviderBoot();
@@ -77,6 +85,24 @@ class JetstreamPlusServiceProvider extends ServiceProvider
     }
 
     /**
+     * Configure the routes offered by the application.
+     *
+     * @return void
+     */
+    protected function configureRoutes()
+    {
+        if (Fortify::$registersRoutes) {
+            Route::group([
+                'namespace' => 'Laravel\Fortify\Http\Controllers',
+                'domain' => config('fortify.domain', null),
+                'prefix' => config('fortify.prefix'),
+            ], function () {
+                $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+            });
+        }
+    }
+
+    /**
      * Boot any Inertia related services.
      */
     protected function bootInertia(): void
@@ -88,6 +114,13 @@ class JetstreamPlusServiceProvider extends ServiceProvider
 
         $kernel->appendMiddlewareToGroup('web', Http\Middleware\ExtraValidationOnAuthRoutes::class);
         $kernel->appendToMiddlewarePriority(Http\Middleware\ExtraValidationOnAuthRoutes::class);
+
+        // Extra pages
+        app()->singleton(ConfirmNewLocationViewResponse::class, function ()  {
+            return new SimpleViewResponse(function () {
+                return \Inertia\Inertia::render('Auth/ConfirmNewLocation');
+            });
+        });
     }
 
     /**
@@ -95,10 +128,13 @@ class JetstreamPlusServiceProvider extends ServiceProvider
      */
     public function fortifyServiceProviderBoot(): void
     {
+        $this->app->singleton(\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController::class, TwoFactorAuthenticatedSessionController::class);
+
         Fortify::authenticateThrough(function (Request $request) {
             return array_filter([
                 config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
                 Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+                Features::enabled('confirm-new-location') ? RedirectIfNewLocationConfirmationNeeded::class : null,
                 AttemptToAuthenticate::class,
                 PrepareAuthenticatedSession::class,
                 Features::enabled('sign-in-notification') ? NotifySignInDetected::class : null,
@@ -107,7 +143,7 @@ class JetstreamPlusServiceProvider extends ServiceProvider
     }
 
     /**
-     * JetStream service provider boot.
+     * Jetstream service provider boot.
      */
     public function jetstreamServiceProviderBoot(): void
     {

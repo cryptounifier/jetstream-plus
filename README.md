@@ -18,17 +18,20 @@ You can publish the package stubs in a simple way like Jetstream with the follow
 php artisan jetstream-plus:install
 ```
 
+> Note: to use 'confirm-new-location' feature with Inertia.js stack, you will to manually create a Auth page stub for it.
+
 ## What changes?
 
 Below is the listing of what this package implements:
 
-- Adds a Captcha class helper ([hCaptcha](https://www.hcaptcha.com/) supported).
-- Adds a IP address class helper ([ProxyCheck](https://proxycheck.io/) supported).
+- Adds a Captcha class helper ([hCaptcha](https://www.hcaptcha.com/), [reCaptcha](https://developers.google.com/recaptcha?hl=pt-br), [Turnstile](https://www.cloudflare.com/pt-br/products/turnstile/), [GeeTest](https://www.geetest.com/en/) supported).
+- Adds a IP address class helper ([ProxyCheck](https://proxycheck.io/), [IpRegistry](https://ipregistry.co/) supported).
 - Adds a User Agent class helper (On top of [Jenssegers Agent](https://github.com/jenssegers/agent)).
 
 Below is the listing of what this package alter/improve:
 
-- Adds a `sign-in-notification` feature for Fortify.
+- Implements a `sign-in-notification` feature for Fortify.
+- Implements a `confirm-new-location` feature for Fortify.
 - Adds a captcha and proxy validation on authentication.
 - Adds an image format engine for profile image.
 - Adds `agent` and `location` values to sessions listing on profile page.

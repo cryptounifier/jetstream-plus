@@ -18,7 +18,7 @@ class UserAgent
         $this->agent = new Agent($headers, $userAgent);
     }
 
-    public static function currentUser(): self
+    public static function currentRequest(): self
     {
         return new self(substr((string) optional(request())->header('User-Agent'), 0, 500), request()->header());
     }

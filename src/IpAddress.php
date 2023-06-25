@@ -83,9 +83,9 @@ class IpAddress extends Model
     }
 
     /**
-     * Create a new element with current user ip address.
+     * Create a new element with current request ip address.
      */
-    public static function currentUser(): self
+    public static function currentRequest(): self
     {
         return self::find(optional(request())->ip());
     }

@@ -64,7 +64,7 @@ class ExtraValidationOnAuthRoutes
 
         if ($isProxy) {
             $messageBag = new MessageBag();
-            $messageBag->add('captcha', __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'));
+            $messageBag->add('ip_address', __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'));
 
             return back()->withErrors($messageBag);
         }

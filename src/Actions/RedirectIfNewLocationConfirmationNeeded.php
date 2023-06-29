@@ -45,6 +45,7 @@ class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthent
             'login.confirmation.id' => $user->getKey(),
             'login.confirmation.remember' => $request->boolean('remember'),
             'login.confirmation.code' => $confirmationCode,
+            'login.confirmation.expires_at' => now()->addMinutes(30),
         ]);
 
         $user->notify(new \CryptoUnifier\JetstreamPlus\Notifications\NewLocationConfirmation($request, $confirmationCode));

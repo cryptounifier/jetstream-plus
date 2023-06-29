@@ -48,20 +48,21 @@ class ConfirmNewLocationLoginRequest extends FormRequest
 
     /**
      * Get the valid confirmation code if one exists on the request.
-     *
-     * @return string|null
      */
-    public function validConfirmationCode()
+    public function isConfirmationCodeValid(): bool
     {
         if (! $this->code) {
-            return;
+            return false;
         }
 
-        $isValid = $this->session()->has('login.confirmation.code');
+        if (! $this->session()->has('login.confirmation.code')) {
+            return false;
+        }
+
+        $isValid = $this->session()->get('login.confirmation.code') === $this->code;
 
         if ($isValid) {
-            $this->session()->forget('login.confirmation.id');
-            $this->session()->forget('login.confirmation.code');
+            $this->forgetChallenge();
         }
 
         return $isValid;
@@ -69,13 +70,21 @@ class ConfirmNewLocationLoginRequest extends FormRequest
 
     /**
      * Determine if there is a challenged user in the current session.
-     *
-     * @return bool
      */
-    public function hasChallengedUser()
+    public function hasChallengedUser(): bool
     {
         if ($this->challengedUser) {
             return true;
+        }
+
+        if (! $this->session()->has('login.confirmation.expires_at')) {
+            return false;
+        }
+        
+        if ($this->session()->get('login.confirmation.expires_at') < now()) {
+            $this->forgetChallenge();
+
+            return false;   
         }
 
         $model = app(StatefulGuard::class)->getProvider()->getModel();
@@ -86,10 +95,8 @@ class ConfirmNewLocationLoginRequest extends FormRequest
 
     /**
      * Get the user that is attempting the two factor challenge.
-     *
-     * @return mixed
      */
-    public function challengedUser()
+    public function challengedUser(): mixed
     {
         if ($this->challengedUser) {
             return $this->challengedUser;
@@ -107,15 +114,26 @@ class ConfirmNewLocationLoginRequest extends FormRequest
 
     /**
      * Determine if the user wanted to be remembered after login.
-     *
-     * @return bool
      */
-    public function remember()
+    public function remember(): bool
     {
         if (! $this->remember) {
             $this->remember = $this->session()->pull('login.confirmation.remember', false);
         }
 
         return $this->remember;
+    }
+
+    /**
+     * Forget challenge from session.
+     */
+    protected function forgetChallenge(): void
+    {
+        $this->session()->forget([
+            'login.confirmation.id', 
+            'login.confirmation.code',
+            'login.confirmation.remember',
+            'login.confirmation.expires_at',
+        ]);
     }
 }

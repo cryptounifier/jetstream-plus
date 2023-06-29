@@ -59,7 +59,7 @@ class NewLocationAuthenticatedSessionController extends Controller
             throw new HttpResponseException(redirect()->route('login'));
         }
 
-        if (! $request->validConfirmationCode()) {
+        if (! $request->isConfirmationCodeValid()) {
             [$key, $message] = ['code', __('The provided confirmation code was invalid.')];
 
             if ($request->wantsJson()) {

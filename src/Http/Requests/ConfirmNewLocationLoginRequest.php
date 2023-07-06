@@ -4,9 +4,6 @@ namespace CryptoUnifier\JetstreamPlus\Http\Requests;
 
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Laravel\Fortify\Contracts\FailedTwoFactorLoginResponse;
-use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 
 class ConfirmNewLocationLoginRequest extends FormRequest
 {
@@ -59,13 +56,7 @@ class ConfirmNewLocationLoginRequest extends FormRequest
             return false;
         }
 
-        $isValid = $this->session()->get('login.confirmation.code') === $this->code;
-
-        if ($isValid) {
-            $this->forgetChallenge();
-        }
-
-        return $isValid;
+        return $this->session()->get('login.confirmation.code') === $this->code;
     }
 
     /**
@@ -80,11 +71,11 @@ class ConfirmNewLocationLoginRequest extends FormRequest
         if (! $this->session()->has('login.confirmation.expires_at')) {
             return false;
         }
-        
-        if ($this->session()->get('login.confirmation.expires_at') < now()) {
-            $this->forgetChallenge();
 
-            return false;   
+        if ($this->session()->get('login.confirmation.expires_at') < now()) {
+            $this->forgetChallengeData();
+
+            return false;
         }
 
         $model = app(StatefulGuard::class)->getProvider()->getModel();
@@ -127,10 +118,10 @@ class ConfirmNewLocationLoginRequest extends FormRequest
     /**
      * Forget challenge from session.
      */
-    protected function forgetChallenge(): void
+    public function forgetChallengeData(): void
     {
         $this->session()->forget([
-            'login.confirmation.id', 
+            'login.confirmation.id',
             'login.confirmation.code',
             'login.confirmation.remember',
             'login.confirmation.expires_at',

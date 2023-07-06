@@ -24,7 +24,6 @@ class NewLocationAuthenticatedSessionController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param  \Illuminate\Contracts\Auth\StatefulGuard  $guard
      * @return void
      */
     public function __construct(StatefulGuard $guard)
@@ -34,7 +33,7 @@ class NewLocationAuthenticatedSessionController extends Controller
 
     /**
      * Show the confirm new location view.
-     * 
+     *
      * @return mixed
      */
     public function create(ConfirmNewLocationLoginRequest $request)
@@ -55,7 +54,7 @@ class NewLocationAuthenticatedSessionController extends Controller
     {
         $user = $request->challengedUser();
 
-        if(! $user) {
+        if (! $user) {
             throw new HttpResponseException(redirect()->route('login'));
         }
 
@@ -77,6 +76,7 @@ class NewLocationAuthenticatedSessionController extends Controller
 
         $this->guard->login($user, $request->remember());
 
+        $request->forgetChallengeData();
         $request->session()->regenerate();
 
         return $request->wantsJson()

@@ -23,11 +23,14 @@ class UserAgent
         return new self(substr((string) optional(request())->header('User-Agent'), 0, 500), request()->header());
     }
 
-    public function __call($method, $arguments)
+    public static function make(string $userAgent, array $headers = []): self
     {
-        if (method_exists($this->agent, $method)) {
-            return call_user_func_array([$this->agent, $method], $arguments);
-        }
+        return new self($userAgent, $headers);
+    }
+    
+    public function getUserAgent(): string
+    {
+        return $this->agent->getUserAgent();
     }
 
     public function platformName(): string
@@ -61,5 +64,12 @@ class UserAgent
         }
 
         return self::DEVICE_TYPE_UNKNOWN;
+    }
+
+    public function __call($method, $arguments)
+    {
+        if (method_exists($this->agent, $method)) {
+            return call_user_func_array([$this->agent, $method], $arguments);
+        }
     }
 }

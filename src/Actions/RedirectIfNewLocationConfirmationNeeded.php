@@ -20,7 +20,7 @@ class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthent
     {
         $user = $this->validateCredentials($request);
 
-        $userInfo = IpAddress::find($user->ip_address);
+        $userInfo = IpAddress::find($user->last_ip_address ?? $user->ip_address);
         $requestIpInfo = IpAddress::currentRequest();
 
         if (!$userInfo->location || !$requestIpInfo->location || $userInfo->location !== $requestIpInfo->location) {

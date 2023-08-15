@@ -3,8 +3,8 @@
 namespace CryptoUnifier\JetstreamPlus\Http\Middleware;
 
 use Closure;
-use CryptoUnifier\JetstreamPlus\CaptchaValidator;
-use CryptoUnifier\JetstreamPlus\IpAddress;
+use CryptoUnifier\Helpers\CaptchaValidator;
+use CryptoUnifier\Helpers\IpAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 

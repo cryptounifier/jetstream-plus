@@ -22,12 +22,6 @@ php artisan jetstream-plus:install
 
 ## What changes?
 
-Below is the listing of what this package implements:
-
-- Adds a Captcha class helper ([hCaptcha](https://www.hcaptcha.com/), [reCaptcha](https://developers.google.com/recaptcha?hl=pt-br), [Turnstile](https://www.cloudflare.com/pt-br/products/turnstile/), [GeeTest](https://www.geetest.com/en/) supported).
-- Adds a IP address class helper ([ProxyCheck](https://proxycheck.io/), [IpRegistry](https://ipregistry.co/) supported).
-- Adds a User Agent class helper (On top of [Jenssegers Agent](https://github.com/jenssegers/agent)).
-
 Below is the listing of what this package alters/improves:
 
 - Implements a `sign-in-notification` feature for Fortify.

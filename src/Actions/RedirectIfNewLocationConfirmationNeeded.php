@@ -2,9 +2,8 @@
 
 namespace CryptoUnifier\JetstreamPlus\Actions;
 
-use CryptoUnifier\JetstreamPlus\IpAddress;
+use CryptoUnifier\Helpers\IpAddress;
 use Illuminate\Support\Str;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 
 class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthenticatable

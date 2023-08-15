@@ -2,7 +2,7 @@
 
 namespace CryptoUnifier\JetstreamPlus\Http\Controllers;
 
-use CryptoUnifier\JetstreamPlus\{IpAddress, UserAgent};
+use CryptoUnifier\Helpers\{IpAddress, UserAgent};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

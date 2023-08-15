@@ -22,15 +22,6 @@ use Laravel\Fortify\Http\Responses\SimpleViewResponse;
 class JetstreamPlusServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        $this->mergeConfigFrom(__DIR__ . '/../config/captcha.php', 'captcha');
-        $this->mergeConfigFrom(__DIR__ . '/../config/ip_address.php', 'ip_address');
-    }
-
-    /**
      * Bootstrap any application services.
      */
     public function boot(): void
@@ -60,13 +51,7 @@ class JetstreamPlusServiceProvider extends ServiceProvider
         }
 
         $this->publishes([
-            __DIR__ . '/../config/captcha.php'    => config_path('captcha.php'),
-            __DIR__ . '/../config/ip_address.php' => config_path('ip_address.php'),
-        ], 'jetstream-plus-configs');
-
-        $this->publishes([
             __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'        => database_path('migrations/2014_10_12_000000_create_users_table.php'),
-            __DIR__ . '/../database/migrations/2021_06_28_133032_create_ip_addresses_table.php' => database_path('migrations/2021_06_28_133032_create_ip_addresses_table.php'),
         ], 'jetstream-plus-migrations');
     }
 

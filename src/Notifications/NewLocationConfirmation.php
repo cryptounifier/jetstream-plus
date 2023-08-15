@@ -2,7 +2,7 @@
 
 namespace CryptoUnifier\JetstreamPlus\Notifications;
 
-use CryptoUnifier\JetstreamPlus\{IpAddress, UserAgent};
+use CryptoUnifier\Helpers\{IpAddress, UserAgent};
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;

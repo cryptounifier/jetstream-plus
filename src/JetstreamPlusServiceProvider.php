@@ -2,6 +2,7 @@
 
 namespace CryptoUnifier\JetstreamPlus;
 
+use CryptoUnifier\JetstreamPlus\Actions\EnsureLoginIsNotThrottled;
 use CryptoUnifier\JetstreamPlus\Actions\NotifySignInDetected;
 use CryptoUnifier\JetstreamPlus\Actions\RedirectIfNewLocationConfirmationNeeded;
 use CryptoUnifier\JetstreamPlus\Contracts\ConfirmNewLocationViewResponse;
@@ -10,7 +11,7 @@ use CryptoUnifier\JetstreamPlus\Http\Controllers\UserProfileController;
 
 use Laravel\Fortify\{Features, Fortify};
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
-use Laravel\Fortify\Actions\{AttemptToAuthenticate, EnsureLoginIsNotThrottled, PrepareAuthenticatedSession};
+use Laravel\Fortify\Actions\{AttemptToAuthenticate, PrepareAuthenticatedSession};
 
 use Illuminate\Http\Request;
 

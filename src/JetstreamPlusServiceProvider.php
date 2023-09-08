@@ -2,16 +2,15 @@
 
 namespace CryptoUnifier\JetstreamPlus;
 
-use CryptoUnifier\JetstreamPlus\Actions\EnsureLoginIsNotThrottled;
 use CryptoUnifier\JetstreamPlus\Actions\NotifySignInDetected;
 use CryptoUnifier\JetstreamPlus\Actions\RedirectIfNewLocationConfirmationNeeded;
 use CryptoUnifier\JetstreamPlus\Contracts\ConfirmNewLocationViewResponse;
 use CryptoUnifier\JetstreamPlus\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use CryptoUnifier\JetstreamPlus\Http\Controllers\UserProfileController;
-
+use CryptoUnifier\JetstreamPlus\Limiters\StrictLoginRateLimiter;
 use Laravel\Fortify\{Features, Fortify};
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
-use Laravel\Fortify\Actions\{AttemptToAuthenticate, PrepareAuthenticatedSession};
+use Laravel\Fortify\Actions\{AttemptToAuthenticate, EnsureLoginIsNotThrottled, PrepareAuthenticatedSession};
 
 use Illuminate\Http\Request;
 
@@ -115,6 +114,8 @@ class JetstreamPlusServiceProvider extends ServiceProvider
     public function fortifyServiceProviderBoot(): void
     {
         $this->app->singleton(\Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController::class, TwoFactorAuthenticatedSessionController::class);
+
+        $this->app->singleton(\Laravel\Fortify\LoginRateLimiter::class, StrictLoginRateLimiter::class);
 
         Fortify::authenticateThrough(function (Request $request) {
             return array_filter([

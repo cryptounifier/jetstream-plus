@@ -37,10 +37,6 @@ class CreateUserFromProvider implements CreatesUserFromProvider
      */
     public function create(string $provider, ProviderUser $providerUser)
     {
-        if (User::where('ip_address', optional(request())->ip())->count() > 8) {
-            return back()->dangerBanner(__('Apparently you already have many accounts on the website.'));
-        }
-
         $userName = $providerUser->getName() ?? $providerUser->getNickname();
         $userName = Str::limit(Str::ucfirst(Str::camel(Str::slug($userName, ' '))), 25, '');
 
@@ -60,9 +56,7 @@ class CreateUserFromProvider implements CreatesUserFromProvider
                     $user->setProfilePhotoFromUrl($providerUser->getAvatar());
                 }
 
-                $user->switchConnectedAccount(
-                    $this->createsConnectedAccounts->create($user, $provider, $providerUser)
-                );
+                $this->createsConnectedAccounts->create($user, $provider, $providerUser);
             });
         });
     }

@@ -49,7 +49,7 @@ class ExtraValidationOnAuthRoutes
     {
         $captchaToken = (string) $request->input('captcha_token');
 
-        if (! CaptchaValidator::defaultDriver()->validate($captchaToken, $request->ip(), $this->getCurrentRouteName($request))) {
+        if (! CaptchaValidator::defaultDriver()->validate($captchaToken, $request->ip(), str_replace('.', '_', $this->getCurrentRouteName($request)))) {
             $messageBag = new MessageBag();
             $messageBag->add('captcha', __('Invalid captcha answer. Please complete the challenge correctly.'));
 

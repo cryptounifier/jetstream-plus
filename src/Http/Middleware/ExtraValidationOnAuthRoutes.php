@@ -10,6 +10,10 @@ use Illuminate\Support\MessageBag;
 
 class ExtraValidationOnAuthRoutes
 {
+    protected array $routes = [
+        'login', 'register', 'password.email', 'verification.send'
+    ];
+
     /**
      * Handle an incoming request.
      *
@@ -19,7 +23,7 @@ class ExtraValidationOnAuthRoutes
     {
         // Validate request method... && Validate request route...
 
-        if ($request->method() === 'POST' && (in_array($request->segment(1), ['login', 'register', 'forgot-password']) || in_array($request->segment(2), ['verification-notification']))) {
+        if ($request->method() === 'POST' && in_array($this->getCurrentRouteName($request), $this->routes)) {
             if (config('captcha.on_auth')) {
                 if ($captchaResponse = $this->validateCaptcha($request)) {
                     return $captchaResponse;
@@ -45,7 +49,7 @@ class ExtraValidationOnAuthRoutes
     {
         $captchaToken = (string) $request->input('captcha_token');
 
-        if (! CaptchaValidator::defaultDriver()->validate($captchaToken)) {
+        if (! CaptchaValidator::defaultDriver()->validate($captchaToken, $request->ip(), $this->getCurrentRouteName($request))) {
             $messageBag = new MessageBag();
             $messageBag->add('captcha', __('Invalid captcha answer. Please complete the challenge correctly.'));
 
@@ -68,5 +72,10 @@ class ExtraValidationOnAuthRoutes
 
             return back()->withErrors($messageBag);
         }
+    }
+
+    protected function getCurrentRouteName(Request $request): string
+    {
+        return $request->route()?->getName() ?? '';
     }
 }

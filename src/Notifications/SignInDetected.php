@@ -2,7 +2,7 @@
 
 namespace CryptoUnifier\JetstreamPlus\Notifications;
 
-use CryptoUnifier\Helpers\{IpAddress, UserAgent};
+use CryptoUnifier\Helpers\{IpAddress, Agent};
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class SignInDetected extends Notification
     public function toMail($notifiable)
     {
         $ipInfo      = IpAddress::find($this->request->ip());
-        $userAgent   = new UserAgent($this->request->userAgent());
+        $userAgent   = Agent::make($this->request->userAgent());
         $currentDate = '**' . now() . '**';
 
         $mail = (new MailMessage())

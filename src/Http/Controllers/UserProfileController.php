@@ -2,7 +2,7 @@
 
 namespace CryptoUnifier\JetstreamPlus\Http\Controllers;
 
-use CryptoUnifier\Helpers\{IpAddress, UserAgent};
+use CryptoUnifier\Helpers\{IpAddress, Agent};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -28,7 +28,7 @@ class UserProfileController extends InertiaUserProfileController
                 ->orderBy('last_activity', 'desc')
                 ->get()
         )->map(function ($session) use ($request) {
-            $agent = new UserAgent($session->user_agent);
+            $agent = Agent::make($session->user_agent);
 
             return (object) [
                 'agent' => [
@@ -37,9 +37,10 @@ class UserProfileController extends InertiaUserProfileController
                     'browser'    => $agent->browserName(),
                 ],
                 'ip_address'        => $session->ip_address,
-                'location'          => IpAddress::find($session->ip_address)->location,
                 'is_current_device' => $session->id === $request->session()->getId(),
                 'last_active'       => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                // Jetstream Plus
+                'location'          => IpAddress::find($session->ip_address)->location,
             ];
         });
     }

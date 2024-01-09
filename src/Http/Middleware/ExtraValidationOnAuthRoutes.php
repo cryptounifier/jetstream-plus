@@ -76,6 +76,19 @@ class ExtraValidationOnAuthRoutes
 
     protected function getCurrentRouteName(Request $request): string
     {
+        if ($request->segment(1) === 'login') {
+            return 'login';
+        }
+        if ($request->segment(1) === 'register') {
+            return 'register';
+        }
+        if ($request->segment(1) === 'forgot-password') {
+            return 'password.email';
+        }
+        if ($request->segment(1) === 'email' && $request->segment(2) === 'verification-notification') {
+            return 'verification.send';
+        }
+
         return $request->route()?->getName() ?? '';
     }
 }

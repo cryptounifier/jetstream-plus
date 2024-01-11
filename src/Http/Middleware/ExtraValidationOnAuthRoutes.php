@@ -47,9 +47,13 @@ class ExtraValidationOnAuthRoutes
      */
     protected function validateCaptcha(Request $request)
     {
-        $captchaToken = (string) $request->input('captcha_token');
+        $isValid = CaptchaValidator::defaultDriver()->validate(
+            token: (string) $request->input('captcha_token'), 
+            action: str_replace('.', '_', $this->getCurrentRouteName($request)),
+            extraParams: config('captcha.on_auth_extra_params', fn (Request $request) => []),
+        );
 
-        if (! CaptchaValidator::defaultDriver()->validate($captchaToken, $request->ip(), str_replace('.', '_', $this->getCurrentRouteName($request)))) {
+        if (! $isValid) {
             $messageBag = new MessageBag();
             $messageBag->add('captcha', __('Invalid captcha answer. Please complete the challenge correctly.'));
 

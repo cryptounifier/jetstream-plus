@@ -50,7 +50,7 @@ class ExtraValidationOnAuthRoutes
         $isValid = CaptchaValidator::defaultDriver()->validate(
             token: (string) $request->input('captcha_token'), 
             action: str_replace('.', '_', $this->getCurrentRouteName($request)),
-            extraParams: config('captcha.on_auth_extra_params', fn (Request $request) => []),
+            extraParams: config('captcha.on_auth_extra_params', fn (Request $request) => [])($request),
         );
 
         if (! $isValid) {

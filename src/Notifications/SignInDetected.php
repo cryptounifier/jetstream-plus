@@ -55,7 +55,7 @@ class SignInDetected extends Notification
             ? $mail->line(__('Request made from: :location at :date.', ['location' => "**{$ipInfo->location}**", 'date' => $currentDate]))
             : $mail->line(__('Request made at :date.', ['date' => $currentDate]));
 
-        return $mail->line(__('Device: :platform (:browser).', ['platform' => "**{$userAgent->platformName()}**", 'browser' => "**{$userAgent->browserName()}**"]))
+        return $mail->line(__('Device: :platform (:browser).', ['platform' => "**{$userAgent->platform()}**", 'browser' => "**{$userAgent->browserFull()}**"]))
             ->line(__('IP Address: :ip.', ['ip' => "**{$ipInfo->ip_address}**"]))
             ->action(__('Secure Your Account'), route('profile.show'))
             ->line(__('If you did not initiate this request, please secure your account immediately.'));

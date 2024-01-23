@@ -33,8 +33,8 @@ class UserProfileController extends InertiaUserProfileController
             return (object) [
                 'agent' => [
                     'is_desktop' => $agent->isDesktop(),
-                    'platform'   => $agent->platformName(),
-                    'browser'    => $agent->browserName(),
+                    'platform'   => $agent->platform(),
+                    'browser'    => $agent->browserFull(),
                 ],
                 'ip_address'        => $session->ip_address,
                 'is_current_device' => $session->id === $request->session()->getId(),

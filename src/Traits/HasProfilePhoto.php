@@ -2,7 +2,8 @@
 
 namespace CryptoUnifier\JetstreamPlus\Traits;
 
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -28,12 +29,20 @@ trait HasProfilePhoto
      */
     public function updateProfilePhoto(UploadedFile $photo, string $storagePath = 'profile-photos'): void
     {
-        // Format, resize image and save temporarily
-        // TODO: Support gif, the currently library do not support animated gif resizing
-        Image::make($photo->get())->resize(256, 256)->save($photo->getPathname(), 90, 'jpg');
+        $manager = new ImageManager(new Driver());
 
-        // Upload image publicly
-        // TODO: Check if because the image changes to jpg, the $photo class need to updated
+        if ($photo->extension() === 'gif') {
+            $manager->read($photo->get())
+                ->resize(128, 128)
+                ->toGif()
+                ->save($photo->getPathname());
+        } else {
+            $manager->read($photo->get())
+                ->resize(128, 128)
+                ->toJpeg(90)
+                ->save($photo->getPathname());
+        }
+
         tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath): void {
             $this->forceFill([
                 'profile_photo_path' => $photo->storePublicly(

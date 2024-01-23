@@ -13,8 +13,8 @@
     "require": {
         "php": "^8.0",
         "laravel/jetstream": "^4.0.0",
-        "joelbutcher/socialstream": "^5.0.0",
-        "intervention/image": "^2.7",
+        "joelbutcher/socialstream": "^5.4.0",
+        "intervention/image": "^3.0",
         "cryptounifier/helpers": "^0.3.0"
     },
     "autoload": {

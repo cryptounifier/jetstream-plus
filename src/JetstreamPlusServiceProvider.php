@@ -50,9 +50,7 @@ class JetstreamPlusServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->publishes([
-            __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'        => database_path('migrations/2014_10_12_000000_create_users_table.php'),
-        ], 'jetstream-plus-migrations');
+        // ...
     }
 
     /**

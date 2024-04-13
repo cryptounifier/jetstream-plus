@@ -22,11 +22,17 @@ class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthent
         $userInfo = IpAddress::find($user->last_ip_address ?? $user->ip_address);
         $requestIpInfo = IpAddress::currentRequest();
 
-        if (!$userInfo->location || !$requestIpInfo->location || $userInfo->location !== $requestIpInfo->location) {
-            return $this->newDeviceConfirmationResponse($request, $user);
+        if (! $user->email_verified_at) { // Do not challenge if user is not verified - avoids unexpected redirects
+            return $next($request);
+        }
+        if (!$userInfo->location || !$requestIpInfo->location) {
+            return $next($request);
+        }
+        if ($userInfo->location === $requestIpInfo->location) {
+            return $next($request);
         }
 
-        return $next($request);
+        return $this->newDeviceConfirmationResponse($request, $user);
     }
 
      /**

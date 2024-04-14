@@ -25,10 +25,7 @@ class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthent
         if (! $user->email_verified_at) { // Do not challenge if user is not verified - avoids unexpected redirects
             return $next($request);
         }
-        if (!$userInfo->location || !$requestIpInfo->location) {
-            return $next($request);
-        }
-        if ($userInfo->location === $requestIpInfo->location) {
+        if (($userInfo->location !== null && $requestIpInfo->location !== null) && $userInfo->location === $requestIpInfo->location) {
             return $next($request);
         }
 

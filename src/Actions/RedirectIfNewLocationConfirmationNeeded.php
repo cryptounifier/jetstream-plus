@@ -4,7 +4,6 @@ namespace CryptoUnifier\JetstreamPlus\Actions;
 
 use CryptoUnifier\Helpers\IpAddress;
 use Illuminate\Support\Str;
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 
 class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthenticatable
 {

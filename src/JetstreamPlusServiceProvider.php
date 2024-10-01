@@ -4,13 +4,13 @@ namespace CryptoUnifier\JetstreamPlus;
 
 use CryptoUnifier\JetstreamPlus\Actions\NotifySignInDetected;
 use CryptoUnifier\JetstreamPlus\Actions\RedirectIfNewLocationConfirmationNeeded;
+use CryptoUnifier\JetstreamPlus\Actions\RedirectIfTwoFactorAuthenticatable;
 use CryptoUnifier\JetstreamPlus\Contracts\ConfirmNewLocationViewResponse;
 use CryptoUnifier\JetstreamPlus\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use CryptoUnifier\JetstreamPlus\Http\Controllers\UserProfileController;
 use CryptoUnifier\JetstreamPlus\Limiters\StrictLoginRateLimiter;
 use Laravel\Fortify\{Features, Fortify};
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
-use Laravel\Fortify\Actions\{AttemptToAuthenticate, EnsureLoginIsNotThrottled, PrepareAuthenticatedSession};
+use Laravel\Fortify\Actions\{AttemptToAuthenticate, CanonicalizeUsername, EnsureLoginIsNotThrottled, PrepareAuthenticatedSession};
 
 use Illuminate\Http\Request;
 
@@ -118,7 +118,8 @@ class JetstreamPlusServiceProvider extends ServiceProvider
         Fortify::authenticateThrough(function (Request $request) {
             return array_filter([
                 config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
-                Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+                config('fortify.lowercase_usernames') ? CanonicalizeUsername::class : null,
+                Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null, // Custom class for Socialstream
                 Features::enabled('confirm-new-location') ? RedirectIfNewLocationConfirmationNeeded::class : null,
                 AttemptToAuthenticate::class,
                 PrepareAuthenticatedSession::class,

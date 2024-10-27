@@ -4,6 +4,7 @@ namespace CryptoUnifier\JetstreamPlus\Actions;
 
 use CryptoUnifier\Helpers\IpAddress;
 use Illuminate\Support\Str;
+use JoelButcher\Socialstream\Socialstream;
 
 class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthenticatable
 {
@@ -42,9 +43,13 @@ class RedirectIfNewLocationConfirmationNeeded extends RedirectIfTwoFactorAuthent
     {
         $confirmationCode = strtoupper(Str::random(6));
 
+        $remember = ($request->route('provider')) 
+            ? Socialstream::hasRememberSessionFeatures() 
+            : $request->boolean('remember');
+
         $request->session()->put([
             'login.confirmation.id' => $user->getKey(),
-            'login.confirmation.remember' => $request->boolean('remember'),
+            'login.confirmation.remember' => $remember,
             'login.confirmation.code' => $confirmationCode,
             'login.confirmation.expires_at' => now()->addMinutes(30),
         ]);

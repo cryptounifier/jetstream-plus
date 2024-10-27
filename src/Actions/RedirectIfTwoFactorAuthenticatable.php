@@ -5,6 +5,7 @@ namespace CryptoUnifier\JetstreamPlus\Actions;
 use JoelButcher\Socialstream\Contracts\ResolvesSocialiteUsers;
 use JoelButcher\Socialstream\Socialstream;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable as BaseRedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Fortify\Fortify;
 
 class RedirectIfTwoFactorAuthenticatable extends BaseRedirectIfTwoFactorAuthenticatable
@@ -52,5 +53,30 @@ class RedirectIfTwoFactorAuthenticatable extends BaseRedirectIfTwoFactorAuthenti
                 $this->throwFailedAuthenticationException($request);
             }
         });
+    }
+
+    /**
+     * Get the two factor authentication enabled response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function twoFactorChallengeResponse($request, $user)
+    {
+        $remember = ($request->route('provider'))
+            ? Socialstream::hasRememberSessionFeatures()
+            : $request->boolean('remember');
+
+        $request->session()->put([
+            'login.id'       => $user->getKey(),
+            'login.remember' => $remember,
+        ]);
+
+        TwoFactorAuthenticationChallenged::dispatch($user);
+
+        return $request->wantsJson()
+                    ? response()->json(['two_factor' => true])
+                    : redirect()->route('two-factor.login');
     }
 }

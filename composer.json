@@ -14,7 +14,7 @@
         "laravel/jetstream": "^5.0.0",
         "joelbutcher/socialstream": "^6.0.0",
         "intervention/image": "^3.0",
-        "cryptounifier/helpers": "^0.5.0"
+        "cryptounifier/helpers": "^0.6.0"
     },
     "autoload": {
         "psr-4": {

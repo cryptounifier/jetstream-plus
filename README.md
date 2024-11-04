@@ -26,7 +26,7 @@ Below is the listing of what this package alters/improves:
 
 - Implements a `sign-in-notification` feature for Fortify.
 - Implements a `confirm-new-location` feature for Fortify.
-- Adds a captcha and proxy validation on authentication.
+- Adds a captcha and proxy/vpn/tor validation on authentication.
 - Adds an image format engine for profile image.
 - Adds `agent` and `location` values to the sessions listing on the profile page.
 - Adds an `ip_address` field to user table (Check [database folder](database)).

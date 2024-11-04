@@ -68,11 +68,11 @@ class ExtraValidationOnAuthRoutes
      */
     protected function validateIpAddress(Request $request)
     {
-        $isProxy = IpAddress::find($request->ip())->proxy;
+        $isBlock = IpAddress::find($request->ip())->block;
 
-        if ($isProxy) {
+        if ($isBlock) {
             $messageBag = new MessageBag();
-            $messageBag->add('ip_address', __('VPS, VPN or Proxy detected! Please disable any type of service that may mask your IP to proceed.'));
+            $messageBag->add('ip_address', __('VPN, Tor or Proxy detected! Please disable any type of service that may mask your IP to proceed.'));
 
             return back()->withErrors($messageBag);
         }

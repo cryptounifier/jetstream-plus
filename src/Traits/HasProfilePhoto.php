@@ -98,7 +98,7 @@ trait HasProfilePhoto
      */
     protected function defaultProfilePhotoUrl()
     {
-        return 'https://www.gravatar.com/avatar/' . urlencode($this->email) . '?s=128&d=retro';
+        return 'https://www.gravatar.com/avatar/' . urlencode($this->email) . '?s=128&d=retro&r=g';
     }
 
     /**
